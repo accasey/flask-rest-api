@@ -92,11 +92,11 @@ quotes_schema = QuoteSchema(many=True)
 @app.route("/quotes", methods=["GET"])
 def quotes():
     quotes_list = Quote.query.all()
-    result = quote_schema.dump(quotes_list)
+    result = quotes_schema.dump(quotes_list)
     return jsonify(result)
 
 
-@app.route("/quote_details/<int:quote_id>", method=["GET"])
+@app.route("/quote_details/<int:quote_id>", methods=["GET"])
 def quote_details(quote_id: int):
     quote = Quote.query.filter_by(quote_id=quote_id).first()
 
@@ -107,7 +107,7 @@ def quote_details(quote_id: int):
         return jsonify(message="That quote does not exist."), 404
 
 
-@app.route("/add_quote", method=["POST"])
+@app.route("/add_quote", methods=["POST"])
 def add_quote():
     quote_desc = request.form["quote_desc"]
     test = Quote.query.filter_by(quote_desc=quote_desc).first()
@@ -123,27 +123,26 @@ def add_quote():
         return jsonify(message="Quote added successfully!"), 201
 
 
-@app.route('/update_quote/<int:quote_id>', methods=['PUT'])
+@app.route("/update_quote/<int:quote_id>", methods=["PUT"])
 def update_quote(quote_id: int):
     quote = Quote.query.filter_by(quote_id=quote_id).first()
     if quote:
-        quote.quote_desc = request.form['quote_desc']
-        quote.quote_type = request.form['quote_type']
-        quote.author = request.form['author']
+        quote.quote_desc = request.form["quote_desc"]
+        quote.quote_type = request.form["quote_type"]
+        quote.author = request.form["author"]
         db.session.commit()
-        return jsonify(message='Quote successfully updated!')
+        return jsonify(message="Quote successfully updated!")
     else:
-        return jsonify(message='That quote does not exist'), 404
+        return jsonify(message="That quote does not exist"), 404
 
 
-
-@app.route('/delete_quote/<int:quote_id>', methods=['DELETE'])
+@app.route("/delete_quote/<int:quote_id>", methods=["DELETE"])
 def delete_quote(quote_id: int):
     quote = Quote.query.filter_by(quote_id=quote_id).first()
     if quote:
         db.session.delete(quote)
         db.session.commit()
-        return jsonify(message='Quote successfully deleted!')
+        return jsonify(message="Quote successfully deleted!")
     else:
-        return jsonify(message='That quote does not exist!')
+        return jsonify(message="That quote does not exist!")
 
